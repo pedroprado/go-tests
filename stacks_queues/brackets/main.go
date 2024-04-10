@@ -19,7 +19,7 @@ var (
 )
 
 func main() {
-	brackets := "(){}[()[][]]{}(())()[[([])][()]{}{}(({}[]()))()[()[{()}]][]]"
+	brackets := "{[()]}"
 
 	start := time.Now()
 	fmt.Println("Starting process")
@@ -41,47 +41,64 @@ func isBalanced(s string) string {
 		return "NO"
 	}
 
-	openingBrackets := []string{firstBracket}
+	brackets := []string{}
 
-	for i := 1; i < len(s); i++ {
-		nextBracket := string(s[i])
-		if isOpeningBracket(nextBracket) {
-			openingBrackets = append(openingBrackets, nextBracket)
+	for i := 0; i < len(s); i++ {
+		bracket := string(s[i])
+
+		if isOpeningBracket(bracket) {
+			brackets = append(brackets, bracket)
+
 			continue
 		}
 
-		//is a closing bracket
-		if len(openingBrackets) == 0 {
-			return "NO"
-		}
-		openingBracket, exists := closingBracketsMap[nextBracket]
-		if !exists {
-			return "NO"
-		}
-		if openingBracket != openingBrackets[len(openingBrackets)-1] {
-			return "NO"
-		}
+		if isClosingBracket(bracket) && lastMatchesClosingBacket(bracket, brackets) {
+			brackets, _ = popBracket(brackets)
+			newBrackets := []string{}
+			newBrackets = append(newBrackets, brackets[0:len(brackets)]...)
+			brackets = newBrackets
 
-		if len(openingBrackets) == 1 {
-			openingBrackets = []string{}
 			continue
 		}
-		// pop
-		newOpeningBrackets := []string{}
-		newOpeningBrackets = append(newOpeningBrackets, openingBrackets[:len(openingBrackets)-1]...)
-		openingBrackets = newOpeningBrackets
 
+		return "NO"
 	}
 
-	return "YES"
+	if len(brackets) == 0 {
+		return "YES"
+	}
+
+	return "NO"
 }
 
-func isOpeningBracket(c string) bool {
-	_, exists := openingBracketsMap[c]
+func isOpeningBracket(bracket string) bool {
+	_, exists := openingBracketsMap[bracket]
 	return exists
 }
 
-func isClosingBracket(c string) bool {
-	_, exists := closingBracketsMap[c]
+func isClosingBracket(bracket string) bool {
+	_, exists := closingBracketsMap[bracket]
 	return exists
+}
+
+func pushBracket(bracket string, brackets []string) []string {
+	brackets = append(brackets, bracket)
+	return brackets
+}
+
+func popBracket(brackets []string) ([]string, string) {
+	newBrackets := []string{}
+	newBrackets = append(newBrackets, brackets[0:len(brackets)-1]...)
+
+	return newBrackets, brackets[len(brackets)-1]
+}
+
+func lastMatchesClosingBacket(closingBracket string, brackets []string) bool {
+	if len(brackets) == 0 {
+		return false
+	}
+
+	openingBracket, _ := closingBracketsMap[closingBracket]
+
+	return openingBracket == brackets[len(brackets)-1]
 }
