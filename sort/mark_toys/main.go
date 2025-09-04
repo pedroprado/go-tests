@@ -1,7 +1,7 @@
 package main
 
 func main() {
-	prices := []int32{1, 10, 29, 4, 9, 3, 11}
+	// prices := []int32{1, 10, 29, 4, 9, 3, 11}
 
 }
 
