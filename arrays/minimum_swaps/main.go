@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 // Minimium number of swaps = minimum number of non-intersecting cycles
 
@@ -17,6 +20,12 @@ func main() {
 
 	fmt.Println(arr)
 	fmt.Println(swaps)
+
+	f, err := strconv.ParseFloat("3,59", 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(f)
 
 }
 
